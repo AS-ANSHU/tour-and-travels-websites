@@ -1,118 +1,193 @@
+"use client";
+import { useState } from "react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "../ui/button";
 
+const tripOptions = [
+  { id: "oneway", label: "Outstation One-way", title: "Book Online Cab" },
+  { id: "roundtrip", label: "Outstation Round trip", title: "Book Online Cab" },
+  { id: "airport", label: "Airport transfer", title: "Book Airport Taxi" },
+  { id: "rental", label: "Hourly Rental", title: "Hourly Car Rental" },
+];
+
 export default function CabBookingForm() {
+  const [selectedOption, setSelectedOption] = useState("oneway");
+
+  const getTitle = () => {
+    return tripOptions.find((opt) => opt.id === selectedOption)?.title;
+  };
+
   return (
-    <section className="flex flex-col items-center justify-center py-24">
-      <div className="relative mt-4 w-full rounded-md border p-8 md:w-2/5 lg:w-2/5">
-        <div className="absolute -top-10 left-0 right-0 flex items-center justify-center">
-          <p className="rounded-xl border bg-blue-500 p-2 text-white">
-            Book Online Cab
-          </p>
-        </div>
-        <form>
-          <div className="py-16">
-            <RadioGroup
-              className="flex flex-col md:flex-row"
-              defaultValue="outstation-one-way"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem
-                  value="outstation-one-way"
-                  id="outstation-one-way"
+    <section
+      className="flex min-h-screen items-center justify-center bg-cover bg-center bg-no-repeat px-4"
+      style={{
+        backgroundImage: `url('/cabbooking.png')`,
+      }}
+    >
+      <div className="mx-auto mb-24 w-full max-w-2xl rounded-xl bg-gradient-to-b from-blue-500 to-orange-400 p-2">
+        <div className="rounded-xl bg-white p-6 shadow-md">
+          <h2 className="mb-4 text-xl font-semibold text-gray-800">
+            {getTitle()}
+          </h2>
+
+          {/* Radio Buttons */}
+          <div className="mb-4 flex flex-wrap gap-4">
+            {tripOptions.map((option) => (
+              <label
+                key={option.id}
+                className="flex cursor-pointer items-center gap-2"
+              >
+                <input
+                  type="radio"
+                  name="tripType"
+                  value={option.id}
+                  checked={selectedOption === option.id}
+                  onChange={() => setSelectedOption(option.id)}
+                  className="accent-blue-600"
                 />
-                <Label htmlFor="outstation-one-way">Outstation One-way</Label>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem
-                  value="Outstation Round trip"
-                  id="Outstation Round trip"
-                />
-                <Label htmlFor="Outstation Round trip">
-                  Outstation Round trip
-                </Label>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem
-                  value="Airport transfer"
-                  id="Airport transfer"
-                />
-                <Label htmlFor="Airport transfer">Airport transfer</Label>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Hourly Rental" id="Hourly Rental" />
-                <Label htmlFor="Hourly Rental">Hourly Rental</Label>
-              </div>
-            </RadioGroup>
-
-            {/* 
-          <ul className="ml-36 flex justify-around gap-4">
-            <li>
-              <input type="radio" />
-              <Link href="/">Outstation One-way</Link>
-            </li>
-            <li>
-              <input type="radio" />
-              <Link href="/">Outstation Round trip</Link>
-            </li>
-            <li>
-              <input type="radio" />
-              <Link href="/">Airport transfer</Link>
-            </li>
-            <li>
-              <input type="radio" />
-              <Link href="/">Hourly Rental</Link>
-            </li>
-          </ul> */}
-          </div>
-          <div className="flex justify-between gap-2">
-            <div className="w-1/2">
-              <label className="mb-1 block text-sm text-gray-500">From</label>
-              <input
-                type="text"
-                placeholder="Enter Pickup location"
-                className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
-              />
-            </div>
-
-            <div className="w-1/2">
-              <label className="mb-1 block text-sm text-gray-500">To</label>
-              <input
-                type="text"
-                placeholder="Enter Pickup Location"
-                className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
-              />
-            </div>
+                <span
+                  className={`font-medium ${selectedOption === option.id ? "text-blue-600" : "text-gray-800"}`}
+                >
+                  {option.label}
+                </span>
+              </label>
+            ))}
           </div>
 
-          <div className="mb-4 mt-4 flex items-center space-x-2 text-sm font-semibold text-blue-600">
-            <span className="cursor-pointer">+ Add Stops</span>
-            <span className="bg-pink-500 px-2 py-0.5 text-xs text-white">
-              New
-            </span>
+          {/* Form Fields */}
+          <div className="space-y-3">
+            {selectedOption !== "rental" && (
+              <>
+                <div>
+                  <label className="text-sm font-medium text-gray-600">
+                    From
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter Pickup location"
+                    className="w-full rounded-md border border-gray-300 px-4 py-2"
+                  />
+                </div>
+                <div className="relative">
+                  <label className="text-sm font-medium text-gray-600">
+                    To
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter Drop location"
+                    className="w-full rounded-md border border-gray-300 px-4 py-2"
+                  />
+                  <div className="absolute right-3 top-9 cursor-pointer text-xl text-gray-500">
+                    ⇅
+                  </div>
+                </div>
+                {selectedOption === "roundtrip" && (
+                  <>
+                    <div className="flex gap-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-600">
+                          Pickup Date
+                        </label>
+                        <div className="font-semibold">05 May&apos;25</div>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-600">
+                          Pickup Time
+                        </label>
+                        <div className="font-semibold">10:00 AM</div>
+                      </div>
+                    </div>
+                    <div className="flex gap-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-600">
+                          Return Date
+                        </label>
+                        <div className="font-semibold">06 May&apos;25</div>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-600">
+                          Return Time
+                        </label>
+                        <div className="text-gray-400">
+                          Anytime till 09:45 PM
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {selectedOption !== "roundtrip" && (
+                  <div className="flex justify-between">
+                    <div>
+                      <label className="text-sm font-medium text-gray-600">
+                        Pickup Date
+                      </label>
+                      <div className="font-semibold">05 May&apos; 25</div>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-600">
+                        Pickup Time
+                      </label>
+                      <div className="font-semibold">10:00 AM</div>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+
+            {selectedOption === "rental" && (
+              <>
+                <div>
+                  <label className="text-sm font-medium text-gray-600">
+                    From
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter Pickup location"
+                    className="w-full rounded-md border border-gray-300 px-4 py-2"
+                  />
+                </div>
+                <div className="flex justify-between">
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">
+                      Pickup Date
+                    </label>
+                    <div className="font-semibold">05 May&apos; 25</div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">
+                      Pickup Time
+                    </label>
+                    <div className="font-semibold">10:00 AM</div>
+                  </div>
+                </div>
+                <div className="mt-2 flex gap-2 overflow-x-auto">
+                  {[
+                    "1 hr (10 km)",
+                    "2 hr (20 km)",
+                    "3 hr (30 km)",
+                    "4 hr (40 km)",
+                  ].map((slot, idx) => (
+                    <button
+                      key={idx}
+                      className="whitespace-nowrap rounded-full border border-blue-600 px-3 py-1 text-sm text-blue-600"
+                    >
+                      {slot}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
-          <div className="mb-6 flex items-start gap-24 text-sm">
-            <div>
-              <label className="block text-gray-500">Pickup Date</label>
-              <div className="mt-1 font-bold">02 May&apos; 25</div>
-            </div>
-
-            <div>
-              <label className="block text-gray-500">Pickup Time</label>
-              <div className="mt-1 font-bold">10:00 AM</div>
-            </div>
-          </div>
-          <button className="w-full rounded-xl border bg-blue-500 p-2 text-white">
-            Search Cabs
+          {/* Search Button */}
+          <button className="mt-6 w-full rounded-full bg-blue-500 py-3 font-bold text-white hover:bg-blue-600">
+            SEARCH CABS
           </button>
-        </form>
+        </div>
       </div>
     </section>
   );
